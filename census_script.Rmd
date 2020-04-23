@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(lubridate)
 library(gganimate)
+library(janitor)
 library(tidyverse)
 ```
 
@@ -18,6 +19,35 @@ Fill out [this form](https://censoc-download.demog.berkeley.edu/) to access the 
 
 
 ## Scene 1
+```{r 1, echo=FALSE, cache = TRUE}
+
+raw <- read_csv("censoc_dmf_v1.csv", col_type = cols(
+  HISTID = col_character(),
+  byear = col_double(),
+  bmonth = col_double(),
+  dyear = col_double(),
+  dmonth = col_double(),
+  death_age = col_double(),
+  weight = col_double()
+)) %>%
+  clean_names()
+raw <- raw %>% filter(bmonth != 0)
+summary(raw)
+
+oldest <- raw %>% arrange(desc(death_age)) %>%
+  head(1)
+
+by_year <- raw %>% group_by(byear) %>%
+  summarize(avg_death = mean(death_age)) %>%
+  arrange(avg_death)
+raw %>% arrange(desc(byear))
+by_month_count <- raw %>% filter(!is.na(death_age)) %>%
+  group_by(dmonth) %>%
+  summarize(avg_death = mean(death_age),
+            n_deaths = n()) %>%
+  arrange(desc(n_deaths))
+raw
+```
 
 * Read in the data into a tibble called `raw`. Make sure to use the `col_types` argument so that you code does not produce aesthetically offensive messages. 
 
