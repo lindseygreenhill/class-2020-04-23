@@ -74,6 +74,23 @@ Create a plot like the [one on Piazza](https://piazza.com/class/k5y1jx0s5ibe1?ci
 
 Don't try to get this working on the whole data set at once. That takes forever. Create a small data set called `small` with about 10,000 rows randomly sampled from `x` first. Use `small` for everything. Then, when the plot looks good, use `x`. 
 
+```{r 3, echo=FALSE}
+
+x <- raw %>%
+    mutate(death_date = ymd(paste0(dyear, "-", dmonth, "-01")))  %>%
+  select(death_age, death_date)
+small <- x %>% sample_n(10000)
+
+ggplot(x, aes(x = death_age)) +
+  geom_histogram(binwidth = 1, color = "white") +
+  labs(title = "Number of Deaths for Each Age",
+       subtitle = "Ages at death is normalesque...",
+       y = "Total Number",
+       c = "Age at Death") +
+  theme_classic()
+```
+
+
 
 
 
